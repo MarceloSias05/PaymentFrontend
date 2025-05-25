@@ -13,8 +13,15 @@ import {
     Home,
     PieChart,
     FileText,
-    Settings
+    Settings,
+    Target
 } from 'lucide-react';
+
+// Import analysis components
+import DomiciliationAnalysis from '../analysis/DomiciliationAnalysis';
+import BankPerformance from '../analysis/BankPerformance';
+import CollectionStrategy from '../analysis/CollectionStrategy';
+import MoneyAccumulationChart from '../charts/MoneyAccumulationChart';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -42,8 +49,9 @@ const Dashboard = () => {
     const menuItems = [
         { id: 'overview', name: 'Resumen', icon: Home },
         { id: 'analytics', name: 'Análisis', icon: BarChart3 },
+        { id: 'banks', name: 'Bancos', icon: Building2 },
+        { id: 'strategies', name: 'Estrategias', icon: Target },
         { id: 'reports', name: 'Reportes', icon: FileText },
-        { id: 'charts', name: 'Gráficos', icon: PieChart },
         { id: 'settings', name: 'Configuración', icon: Settings }
     ];
 
@@ -118,7 +126,7 @@ const Dashboard = () => {
                             <span className="text-white font-bold text-sm">C</span>
                         </div>
                         <span className="text-xl font-bold text-gray-900">CREDI</span>
-                        <span className="text-xl font-bold text-blue-600">FIEL</span>
+                        <span className="text-xl font-bold text-blue-600">fiel</span>
                     </div>
                     <button
                         onClick={() => setSidebarOpen(false)}
@@ -273,6 +281,9 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
+                            {/* Money Accumulation Chart */}
+                            <MoneyAccumulationChart />
+
                             {/* Key Insights */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -355,8 +366,17 @@ const Dashboard = () => {
                         </div>
                     )}
 
+                    {/* Analytics Tab */}
+                    {activeTab === 'analytics' && <DomiciliationAnalysis />}
+
+                    {/* Banks Tab */}
+                    {activeTab === 'banks' && <BankPerformance />}
+
+                    {/* Strategies Tab */}
+                    {activeTab === 'strategies' && <CollectionStrategy />}
+
                     {/* Other tabs content */}
-                    {activeTab !== 'overview' && (
+                    {(activeTab === 'reports' || activeTab === 'settings') && (
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                             <div className="text-center">
                                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
