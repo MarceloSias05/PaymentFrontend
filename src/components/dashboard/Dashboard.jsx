@@ -55,10 +55,10 @@ const Dashboard = () => {
 
     const menuItems = [
         { id: 'overview', name: 'Resumen', icon: Home },
+        { id: 'logs', name: 'Registro', icon: AlertCircle }, // NUEVA LÍNEA
         { id: 'analytics', name: 'Análisis', icon: BarChart3 },
         { id: 'banks', name: 'Bancos', icon: Building2 },
         { id: 'strategies', name: 'Estrategias', icon: Target },
-        { id: 'logs', name: 'Registro', icon: AlertCircle }, // NUEVA LÍNEA
         { id: 'reports', name: 'Reportes', icon: FileText },
         { id: 'settings', name: 'Configuración', icon: Settings }
     ];
@@ -134,7 +134,7 @@ const Dashboard = () => {
                             <span className="text-white font-bold text-sm">C</span>
                         </div>
                         <span className="text-xl font-bold text-gray-900">CREDI</span>
-                        <span className="text-xl font-bold text-blue-600">fiel</span>
+                        <span className="text-xl font-bold text-blue-600">FIEL</span>
                     </div>
                     <button
                         onClick={() => setSidebarOpen(false)}
