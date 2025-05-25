@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authService } from '../hooks/useApi';
 
 const AuthContext = createContext();
 
@@ -17,11 +18,11 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Verificar si hay un usuario guardado en localStorage
-        const savedUser = localStorage.getItem('credifiel_user');
-        const savedToken = localStorage.getItem('credifiel_token');
+        const savedUser = authService.getCurrentUser();
+        const hasToken = authService.isAuthenticated();
         
-        if (savedUser && savedToken) {
-            setUser(JSON.parse(savedUser));
+        if (savedUser && hasToken) {
+            setUser(savedUser);
             setIsAuthenticated(true);
         }
         setLoading(false);
@@ -31,31 +32,13 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             
-            // Simulación de API call para desarrollo
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Usar el servicio de autenticación real
+            const userData = await authService.login(email, password);
             
-            // Credenciales de prueba
-            if (email === 'admin@credifiel.com' && password === 'admin123') {
-                const userData = {
-                    id: 1,
-                    name: 'Administrador Credifiel',
-                    email: email,
-                    role: 'admin'
-                };
-                
-                const token = 'mock-jwt-token-' + Date.now();
-                
-                // Guardar datos del usuario y token
-                localStorage.setItem('credifiel_user', JSON.stringify(userData));
-                localStorage.setItem('credifiel_token', token);
-                
-                setUser(userData);
-                setIsAuthenticated(true);
-                
-                return { success: true };
-            } else {
-                throw new Error('Credenciales inválidas');
-            }
+            setUser(userData);
+            setIsAuthenticated(true);
+            
+            return { success: true };
         } catch (error) {
             console.error('Error en login:', error);
             return { success: false, error: error.message };
@@ -68,33 +51,13 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             
-            // Simulación de API call para desarrollo
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Usar el servicio de registro real
+            const result = await authService.register(userData);
             
-            // Validaciones básicas
-            if (!userData.email || !userData.password || !userData.name) {
-                throw new Error('Todos los campos son requeridos');
-            }
+            // Después del registro exitoso, hacer login automático
+            const loginResult = await authService.login(userData.email, userData.password);
             
-            // Simular que algunos emails ya están registrados
-            if (userData.email === 'existing@credifiel.com') {
-                throw new Error('El email ya está registrado');
-            }
-            
-            const newUser = {
-                id: Date.now(),
-                name: userData.name,
-                email: userData.email,
-                role: 'user'
-            };
-            
-            const token = 'mock-jwt-token-' + Date.now();
-            
-            // Auto-login después del registro
-            localStorage.setItem('credifiel_user', JSON.stringify(newUser));
-            localStorage.setItem('credifiel_token', token);
-            
-            setUser(newUser);
+            setUser(loginResult);
             setIsAuthenticated(true);
             
             return { success: true };
@@ -106,11 +69,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('credifiel_user');
-        localStorage.removeItem('credifiel_token');
-        setUser(null);
-        setIsAuthenticated(false);
+    const logout = async () => {
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.error('Error en logout:', error);
+        } finally {
+            setUser(null);
+            setIsAuthenticated(false);
+        }
     };
 
     const value = {
