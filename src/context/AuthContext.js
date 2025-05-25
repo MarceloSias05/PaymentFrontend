@@ -31,29 +31,31 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             
-            // Simulación de API call - reemplazar con llamada real
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
+            // Simulación de API call para desarrollo
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Credenciales de prueba
+            if (email === 'admin@credifiel.com' && password === 'admin123') {
+                const userData = {
+                    id: 1,
+                    name: 'Administrador Credifiel',
+                    email: email,
+                    role: 'admin'
+                };
+                
+                const token = 'mock-jwt-token-' + Date.now();
+                
+                // Guardar datos del usuario y token
+                localStorage.setItem('credifiel_user', JSON.stringify(userData));
+                localStorage.setItem('credifiel_token', token);
+                
+                setUser(userData);
+                setIsAuthenticated(true);
+                
+                return { success: true };
+            } else {
                 throw new Error('Credenciales inválidas');
             }
-
-            const data = await response.json();
-            
-            // Guardar datos del usuario y token
-            localStorage.setItem('credifiel_user', JSON.stringify(data.user));
-            localStorage.setItem('credifiel_token', data.token);
-            
-            setUser(data.user);
-            setIsAuthenticated(true);
-            
-            return { success: true };
         } catch (error) {
             console.error('Error en login:', error);
             return { success: false, error: error.message };
@@ -66,26 +68,33 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             
-            // Simulación de API call - reemplazar con llamada real
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al crear la cuenta');
+            // Simulación de API call para desarrollo
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Validaciones básicas
+            if (!userData.email || !userData.password || !userData.name) {
+                throw new Error('Todos los campos son requeridos');
             }
-
-            const data = await response.json();
+            
+            // Simular que algunos emails ya están registrados
+            if (userData.email === 'existing@credifiel.com') {
+                throw new Error('El email ya está registrado');
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name: userData.name,
+                email: userData.email,
+                role: 'user'
+            };
+            
+            const token = 'mock-jwt-token-' + Date.now();
             
             // Auto-login después del registro
-            localStorage.setItem('credifiel_user', JSON.stringify(data.user));
-            localStorage.setItem('credifiel_token', data.token);
+            localStorage.setItem('credifiel_user', JSON.stringify(newUser));
+            localStorage.setItem('credifiel_token', token);
             
-            setUser(data.user);
+            setUser(newUser);
             setIsAuthenticated(true);
             
             return { success: true };
