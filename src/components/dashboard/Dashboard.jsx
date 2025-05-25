@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import EventLogWidget from '../logs/EventLogWidget';
+import EventLog from '../logs/EventLog';
+
 import { 
     BarChart3, 
     TrendingUp, 
@@ -17,11 +20,15 @@ import {
     Target
 } from 'lucide-react';
 
+
+
 // Import analysis components
 import DomiciliationAnalysis from '../analysis/DomiciliationAnalysis';
 import BankPerformance from '../analysis/BankPerformance';
 import CollectionStrategy from '../analysis/CollectionStrategy';
 import MoneyAccumulationChart from '../charts/MoneyAccumulationChart';
+
+
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -51,6 +58,7 @@ const Dashboard = () => {
         { id: 'analytics', name: 'Análisis', icon: BarChart3 },
         { id: 'banks', name: 'Bancos', icon: Building2 },
         { id: 'strategies', name: 'Estrategias', icon: Target },
+        { id: 'logs', name: 'Registro', icon: AlertCircle }, // NUEVA LÍNEA
         { id: 'reports', name: 'Reportes', icon: FileText },
         { id: 'settings', name: 'Configuración', icon: Settings }
     ];
@@ -281,8 +289,18 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
+
+
+
+
                             {/* Money Accumulation Chart */}
                             <MoneyAccumulationChart />
+
+                            {/* Event Log Widget - AGREGAR ESTO */}
+                            <EventLogWidget 
+                                onViewAll={() => setActiveTab('logs')} 
+                            />
+
 
                             {/* Key Insights */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -375,6 +393,9 @@ const Dashboard = () => {
                     {/* Strategies Tab */}
                     {activeTab === 'strategies' && <CollectionStrategy />}
 
+                    {/* Logs Tab - AGREGAR ESTO */}
+                    {activeTab === 'logs' && <EventLog />}      
+
                     {/* Other tabs content */}
                     {(activeTab === 'reports' || activeTab === 'settings') && (
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -410,5 +431,6 @@ const Dashboard = () => {
         </div>
     );
 };
+
 
 export default Dashboard;
