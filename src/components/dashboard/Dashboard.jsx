@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import StrategiesTab from './StrategiesTab';
+
 
 // Import components
 import DomiciliationAnalysis from '../analysis/DomiciliationAnalysis';
@@ -33,6 +35,62 @@ const Dashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('overview');
 
+    const getUserDisplayName = () => {
+        if (!user) return 'Usuario';
+        
+        // Priorizar nombre completo, luego first_name, luego username, luego email
+        return user.name || 
+               user.first_name || 
+               user.username || 
+               user.email?.split('@')[0] || 
+               'Usuario';
+    };
+
+    const getUserInitials = () => {
+        const displayName = getUserDisplayName();
+        
+        if (user?.first_name && user?.last_name) {
+            return `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+        }
+        
+        // Si no hay first_name/last_name, usar las primeras letras del nombre completo
+        const names = displayName.split(' ');
+        if (names.length >= 2) {
+            return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
+        }
+        
+        return displayName.charAt(0).toUpperCase();
+    };
+
+    const getLastLoginInfo = () => {
+        if (user?.last_login) {
+            const lastLogin = new Date(user.last_login);
+            const now = new Date();
+            const diffMs = now - lastLogin;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffDays > 0) {
+                return `Último acceso hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
+            } else if (diffHours > 0) {
+                return `Último acceso hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+            } else {
+                return 'Conectado recientemente';
+            }
+        }
+        return 'Primera sesión';
+    };
+
+    const getJoinedDate = () => {
+        if (user?.date_joined) {
+            return new Date(user.date_joined).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        return 'Fecha no disponible';
+    };
     // Datos simulados basados en el caso de estudio
     const dashboardData = {
         stats: {
@@ -151,6 +209,8 @@ const Dashboard = () => {
         </div>
     );
 
+
+
     return (
         <div className="min-h-screen bg-gray-50 flex">
             {/* Sidebar */}
@@ -204,14 +264,14 @@ const Dashboard = () => {
                                 {user?.name?.charAt(0) || 'U'}
                             </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
-                                {user?.name || 'Usuario'}
-                            </p>
-                            <p className="text-xs text-gray-500 truncate">
-                                {user?.email || 'usuario@credifiel.com'}
-                            </p>
-                        </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                    {user?.first_name} {user?.last_name}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">
+                                    {user?.email}
+                                </p>
+                            </div>
                     </div>
                     <button
                         onClick={logout}
@@ -417,7 +477,7 @@ const Dashboard = () => {
                     {/* Other Tabs Content */}
                     {activeTab === 'analytics' && <DomiciliationAnalysis />}
                     {activeTab === 'banks' && <BankPerformance />}
-                    {activeTab === 'strategies' && <CollectionStrategy />}
+                    {activeTab === 'strategies' && <StrategiesTab />}
                     {activeTab === 'logs' && <EventLog />}
                     {activeTab === 'reports' && <Reports />}
                     {activeTab === 'settings' && <Settings />}

@@ -1,0 +1,145 @@
+/* d:\dev\payment-frontend\src\styles\StrategiesTab.css */
+.strategies-tab {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.strategies-tab h2 {
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.no-data {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+  color: #6c757d;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summary-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.summary-card h3 {
+  margin: 0 0 10px 0;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.summary-card .metric {
+  font-size: 32px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.comparison-matrix {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.matrix-table th {
+  background: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.matrix-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.matrix-table tr:hover {
+  background: #f8f9fa;
+}
+
+.strategy-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.success-rate.high {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.success-rate.low {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.collection-rate.high {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.collection-rate.low {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.detailed-strategies {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.detailed-strategies h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.strategy-detail {
+  padding: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.strategy-detail h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+}
+
+.strategy-metrics {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.strategy-metrics span {
+  background: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
