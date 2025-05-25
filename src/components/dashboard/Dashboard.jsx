@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+
+// Import components
+import DomiciliationAnalysis from '../analysis/DomiciliationAnalysis';
+import BankPerformance from '../analysis/BankPerformance';
+import CollectionStrategy from '../analysis/CollectionStrategy';
 import EventLogWidget from '../logs/EventLogWidget';
 import EventLog from '../logs/EventLog';
+import Reports from '../reports/Reports';
+import Settings from '../settings/Settings';
 
 import { 
     BarChart3, 
@@ -16,19 +23,10 @@ import {
     Home,
     PieChart,
     FileText,
-    Settings,
-    Target
+    Settings as SettingsIcon,
+    Target,
+    Activity
 } from 'lucide-react';
-
-
-
-// Import analysis components
-import DomiciliationAnalysis from '../analysis/DomiciliationAnalysis';
-import BankPerformance from '../analysis/BankPerformance';
-import CollectionStrategy from '../analysis/CollectionStrategy';
-import MoneyAccumulationChart from '../charts/MoneyAccumulationChart';
-
-
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -55,12 +53,12 @@ const Dashboard = () => {
 
     const menuItems = [
         { id: 'overview', name: 'Resumen', icon: Home },
-        { id: 'logs', name: 'Registro', icon: AlertCircle }, // NUEVA LÍNEA
+        { id: 'logs', name: 'Registro', icon: Activity }, 
         { id: 'analytics', name: 'Análisis', icon: BarChart3 },
         { id: 'banks', name: 'Bancos', icon: Building2 },
         { id: 'strategies', name: 'Estrategias', icon: Target },
         { id: 'reports', name: 'Reportes', icon: FileText },
-        { id: 'settings', name: 'Configuración', icon: Settings }
+        { id: 'settings', name: 'Configuración', icon: SettingsIcon }
     ];
 
     const StatCard = ({ title, value, icon: Icon, change, color = 'blue' }) => (
@@ -124,6 +122,35 @@ const Dashboard = () => {
         );
     };
 
+    const MoneyAccumulationChart = () => (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">
+                    Acumulación de Dinero por Mes
+                </h3>
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                        <span className="text-sm text-gray-600">Recaudado</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                        <span className="text-sm text-gray-600">Proyectado</span>
+                    </div>
+                </div>
+            </div>
+            <div className="h-80 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-lg">
+                <div className="text-center">
+                    <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                    <p className="text-gray-500">Gráfico de Acumulación Mensual</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                        Comisiones proyectadas: $1,000,000 MXN/mes
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-gray-50 flex">
             {/* Sidebar */}
@@ -151,7 +178,10 @@ const Dashboard = () => {
                             return (
                                 <button
                                     key={item.id}
-                                    onClick={() => setActiveTab(item.id)}
+                                    onClick={() => {
+                                        setActiveTab(item.id);
+                                        setSidebarOpen(false); // Close sidebar on mobile
+                                    }}
                                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
                                         activeTab === item.id
                                             ? 'bg-blue-100 text-blue-700'
@@ -205,7 +235,9 @@ const Dashboard = () => {
                             >
                                 <Menu className="w-6 h-6" />
                             </button>
-                            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">
+                                {menuItems.find(item => item.id === activeTab)?.name || 'Dashboard'}
+                            </h1>
                         </div>
                         <div className="text-sm text-gray-500">
                             Último análisis: {new Date().toLocaleDateString('es-ES')}
@@ -283,24 +315,22 @@ const Dashboard = () => {
                                             <ActivityItem key={activity.id} activity={activity} />
                                         ))}
                                     </div>
-                                    <button className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                    <button 
+                                        onClick={() => setActiveTab('logs')}
+                                        className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                    >
                                         Ver todas las actividades →
                                     </button>
                                 </div>
                             </div>
 
-
-
-
-
                             {/* Money Accumulation Chart */}
                             <MoneyAccumulationChart />
 
-                            {/* Event Log Widget - AGREGAR ESTO */}
+                            {/* Event Log Widget */}
                             <EventLogWidget 
                                 onViewAll={() => setActiveTab('logs')} 
                             />
-
 
                             {/* Key Insights */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -384,40 +414,13 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {/* Analytics Tab */}
+                    {/* Other Tabs Content */}
                     {activeTab === 'analytics' && <DomiciliationAnalysis />}
-
-                    {/* Banks Tab */}
                     {activeTab === 'banks' && <BankPerformance />}
-
-                    {/* Strategies Tab */}
                     {activeTab === 'strategies' && <CollectionStrategy />}
-
-                    {/* Logs Tab - AGREGAR ESTO */}
-                    {activeTab === 'logs' && <EventLog />}      
-
-                    {/* Other tabs content */}
-                    {(activeTab === 'reports' || activeTab === 'settings') && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                            <div className="text-center">
-                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <BarChart3 className="w-8 h-8 text-gray-400" />
-                                </div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                    Sección en Desarrollo
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    Esta sección estará disponible próximamente con análisis avanzados de domiciliación.
-                                </p>
-                                <button
-                                    onClick={() => setActiveTab('overview')}
-                                    className="btn-primary"
-                                >
-                                    Volver al Resumen
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    {activeTab === 'logs' && <EventLog />}
+                    {activeTab === 'reports' && <Reports />}
+                    {activeTab === 'settings' && <Settings />}
                 </div>
             </div>
 
@@ -431,6 +434,5 @@ const Dashboard = () => {
         </div>
     );
 };
-
 
 export default Dashboard;
