@@ -73,7 +73,7 @@ const Login = () => {
                                 <span className="text-white font-bold text-sm">C</span>
                             </div>
                             <span className="text-2xl font-bold text-gray-900">CREDI</span>
-                            <span className="text-2xl font-bold text-blue-600">fiel</span>
+                            <span className="text-2xl font-bold text-blue-600">FIEL</span>
                         </div>
                     </div>
 
